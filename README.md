@@ -1,1 +1,0 @@
-# atlas-web_graphql
