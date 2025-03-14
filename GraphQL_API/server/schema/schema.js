@@ -15,8 +15,21 @@ const TaskType = new GraphQLObjectType({
   })
 });
 
-const schema = new GraphQLSchema({
-  query: TaskType,
+const RootQueryType = new GraphQLObjectType({
+  name: 'RootQueryType',
+  fields: () => ({
+    task: {
+      type: TaskType,
+      args: {
+        id: { type: GraphQLString },
+      },
+      resolve: (parent, args) => {
+        return {}
+      },
+    },
+  }),
 });
 
-export default schema;
+export const schema = new GraphQLSchema({
+  query: RootQueryType,
+});
