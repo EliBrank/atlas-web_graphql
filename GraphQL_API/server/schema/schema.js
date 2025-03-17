@@ -3,7 +3,8 @@ import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLID,
-  GraphQLInt
+  GraphQLInt,
+  GraphQLList
 } from "graphql";
 import lodash from 'lodash';
 
@@ -13,14 +14,14 @@ const tasks = [
     title: 'Create your first webpage',
     weight: 1,
     description: 'Create your first HTML file 0-index.html with: -Add the doctype on the first line (without any comment) -After the doctype, open and close a html tag Open your file in your browser (the page should be blank)',
-    project: 1,
+    projectId: '1',
   },
   {
     id: '2',
     title: 'Structure your webpage',
     weight: 1,
     description: 'Copy the content of 0-index.html into 1-index.html Create the head and body sections inside the html tag, create the head and body tags (empty) in this order',
-    project: 1,
+    projectId: '1',
   },
 ]
 
@@ -49,8 +50,8 @@ const TaskType = new GraphQLObjectType({
     description: { type: GraphQLString },
     project: {
       type: ProjectType,
-      resolve: (parent, args) => {
-
+      resolve: (parent) => {
+        return lodash.find(projects, { id: parent.projectId });
       }
     }
   })
@@ -63,6 +64,12 @@ const ProjectType = new GraphQLObjectType({
     title: { type: GraphQLString },
     weight: { type: GraphQLInt },
     description: { type: GraphQLString },
+    tasks: {
+      type: GraphQLList(TaskType),
+      resolve: (parent) => {
+        return lodash.filter(tasks, { projectId: parent.id });
+      }
+    },
   }),
 });
 
@@ -75,7 +82,7 @@ const RootQueryType = new GraphQLObjectType({
         id: { type: GraphQLID },
       },
       // load in dummy data from tasks array
-      resolve: (parent, args) => {
+      resolve: (_, args) => {
         return lodash.find(tasks, { id: args.id });
       },
     },
@@ -85,8 +92,20 @@ const RootQueryType = new GraphQLObjectType({
         id: { type: GraphQLID },
       },
       // load in dummy data from projects array
-      resolve: (parent, args) => {
+      resolve: (_, args) => {
         return lodash.find(projects, { id: args.id });
+      },
+    },
+    tasks: {
+      type: GraphQLList(TaskType),
+      resolve: () => {
+        return tasks;
+      },
+    },
+    projects: {
+      type: GraphQLList(ProjectType),
+      resolve: () => {
+        return projects;
       },
     },
   }),
