@@ -99,6 +99,24 @@ const Mutation = new GraphQLObjectType({
         return project.save();
       },
     },
+    addTask: {
+      type: TaskType,
+      args: {
+        title: { type: GraphQLNonNull(GraphQLString) },
+        weight: { type: GraphQLNonNull(GraphQLInt) },
+        description: { type: GraphQLNonNull(GraphQLString) },
+        projectId: { type: GraphQLNonNull(GraphQLID) },
+      },
+      resolve(_, args) {
+        const task = new Task({
+          title: args.title,
+          weight: args.weight,
+          description: args.description,
+          projectId: args.projectId,
+        });
+        return task.save();
+      },
+    },
   }),
 });
 
