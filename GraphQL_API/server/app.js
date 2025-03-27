@@ -4,7 +4,11 @@ import { schema } from './schema/schema.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-// load environment variables from file
+// allow virtuals to be usable
+mongoose.set('toObject', { virtuals: true });
+mongoose.set('toJSON', { virtuals: true });
+
+// load environment variables from .env file
 dotenv.config();
 
 const app = express();

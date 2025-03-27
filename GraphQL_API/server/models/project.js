@@ -17,4 +17,11 @@ const projectSchema = new Schema({
   },
 });
 
+// with virtual field, project model can access tasks with populate()
+projectSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id', // automatically generated id for projects
+    foreignField: 'projectId', // field to be matched in Task model
+});
+
 export default mongoose.model('Project', projectSchema);
